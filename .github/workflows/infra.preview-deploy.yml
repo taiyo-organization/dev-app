@@ -59,3 +59,4 @@ jobs:
             -input=false \
             -no-color \
             -detailed-exitcode
+            
