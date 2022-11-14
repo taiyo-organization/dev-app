@@ -27,16 +27,16 @@ jobs:
     name: "Preview"
     runs-on: ubuntu-latest
     steps:
-      - name: checkout repository
+      - name: checkout repository # Runner(実行環境にリポジトリからデータをダウンロードして持ってくる)
         uses: actions/checkout@v3
-      - name: setup terraform
+      - name: setup terraform # terrafrom cliの初期化アクション
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: ${{ env.TF_VERSION }}
-      - name: Terraform format
+          terraform_version: ${{ env.TF_VERSION }} #Terraformのバージョン指定
+      - name: Terraform format # formatが適用できているのか確認
         run:
-          terraform fmt -check
-      - name: Configure AWS credential
+          terraform fmt -check # -check: 終了ステータスとして問題なければ０,あればそれ以外を返す
+      - name: Configure AWS credential # terraform init等でs3へのバケットアクセスあるので事前にクレデンシャル設定必要
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
@@ -44,3 +44,6 @@ jobs:
       - name: Terraform init
         run:
           terraform init -no-color
+      - name: Terraform validate
+        run:
+          terraform validate -no-color
